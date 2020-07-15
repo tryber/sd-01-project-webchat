@@ -17,6 +17,7 @@ const connection = () => {
 
 const getAll = async () => connection().then((db) => db.collection('messages').find().toArray());
 
-const sendMessage = async msg => connection().then((db) => db.collection('messages').insertOne({ message: msg }));
+const sendMessage = async (message, nickname, date) => connection()
+  .then((db) => db.collection('messages').insertOne({ message, nickname, date }));
 
 module.exports = { getAll, sendMessage };
