@@ -1,32 +1,36 @@
-const connection = require('./connection');
+const connection = require('../services/connection');
 
 class Message {
-  constructor({ content, hour, author }) {
+  constructor({ content, author }) {
     this.content = content;
-    this.hour = hour;
     this.author = author;
   }
 
   async create() {
-    const { content, hour, author } = this;
     try {
+      const { content, author } = this;
       const db = await connection();
       return await db.collection('messages').insertOne({
         content: content,
-        hour: hour,
+        hour: new Date(),
         author: author,
+      }, {
+        
       });
     } catch (err) {
       throw err;
     }
   }
 
-  async getAll() {
+  static getAll = async () => {
     try {
       const db = await connection();
       const data = await db.collection('messages').find().toArray();
-      if (!data) return resolve(null);
-
+      if (!data) {
+        const notFoundError = new Error('NotFoundError');
+        notFoundError.details = `Nada encontrado`;
+        throw notFoundError;
+      }
       return data;
     } catch (err) {
       throw err;

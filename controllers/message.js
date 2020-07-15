@@ -1,20 +1,20 @@
 const Message = require('../models/message');
 
-exports.create = async (req, res) => {
-  const { content, author, hour } = req.body;
+exports.create = async (param) => {
   try {
-    const data = await Message.create({ content, author, hour });
-    return res.status(200).json(data);
+    const { content, author } = param;
+    const data = await new Message({ content, author }).create();
+    return data.ops[0];
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    return { message: 'Algo deu errado' };
   }
 };
 
-exports.getAll = async (req, res) => {
+exports.getAll = async () => {
   try {
     const data = await Message.getAll();
-    return res.status(200).json(data);
+    return data;
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    return { message: 'Algo deu errado' };
   }
 }
