@@ -8,7 +8,10 @@ const app = express();
 const http = require('http').createServer(app);
 const io = require('socket.io')(http);
 
-app.use(express.static(path.resolve(__dirname, '..', 'style')));
+app.use(express.static(path.join(__dirname, '..', 'view')));
+app.set('views', path.join(__dirname, '..', 'view'));
+app.engine('html', require('ejs').renderFile);
+app.set('view engine', 'html');
 
 app.use('/', chatRouter);
 

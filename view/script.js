@@ -1,11 +1,7 @@
-const socket = io('http://localhost:3000');
+const socket = io();
 
-// function renderMessage({ name, message, date }) {
-//   $(".messages").append(`<div><strong>${name}</strong>: ${message}</div>`);
-// }
-
-function renderMessage(message) {
-  $(".messages").append('<div><strong>' + message.name + '</strong>: ' + message.message + ' </div>');
+function renderMessage({ name, message, date }) {
+  $(".messages").append(`<div>${new Date(date).toLocaleString("pt-BR")} <strong>${name}</strong>: ${message}</div>`);
 }
 
 socket.on('previousMessages', (messages) => {
@@ -15,6 +11,7 @@ socket.on('previousMessages', (messages) => {
 });
 
 socket.on('receivedMessage', (message) => {
+  $.notify("Você recebeu uma nova mensagem", "info");
   renderMessage(message);
 });
 
@@ -36,5 +33,3 @@ $("#chat").submit(function (event) {
     socket.emit("sendMessage", messageObj);
   }
 });
-
-{/* <script src="script.js"></script> */ }
