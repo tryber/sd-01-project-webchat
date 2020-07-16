@@ -1,6 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import io from 'socket.io-client';
+import OnlineUsers from './OnlineUsers';
 import './Webchat.css';
+import Login from './Login';
 
 const socket = io('http://localhost:8080');
 
@@ -8,20 +10,9 @@ socket.on('notification', (nickname) => {
   document.querySelector('#notifications').innerHTML = `${nickname} chegou!`;
 });
 
-function socketConnect(nickname) {
-  socket.on('connection');
-  socket.emit('login', nickname);
-}
-
 function socketDisconnect(setConnected, nickname) {
   socket.emit('logoff', nickname);
   setConnected(false);
-}
-
-function handleSubmit(event, setConnected, nickname) {
-  event.preventDefault();
-  socketConnect(nickname);
-  setConnected(true);
 }
 
 function sendMessage(text, author) {
@@ -35,24 +26,13 @@ function Webchat() {
   const [nickname, setNickname] = useState('');
   const [message, setMessage] = useState('');
 
-  window.onbeforeunload = function() {
-    socket.emit("logoff", nickname);
-  }
-
+  window.onbeforeunload = () => socket.emit("logoff", nickname);
   socket.on('users', connectedUsers => setUsers(connectedUsers));
   socket.on('history', messages => setData(messages));
-
   return (
     <div className="content">
-      {connected && <div>
-        <p>Conectados atualmente:</p>
-        {users.map(user => <p key={user}>{user}</p>)}
-      </div>}
-      {!connected && 
-      <form onSubmit={(e) => handleSubmit(e, setConnected, nickname)}>
-        <input type="text" required onChange={(e) => setNickname(e.target.value)} placeholder="Nickname"/>
-        <button type="submit">Entrar</button>
-      </form>}
+      {connected && <OnlineUsers users={users} />}
+      {!connected && <Login setConnected={setConnected} nickname={nickname} setNickname={setNickname} />}
       <div>
         {connected && <div>
           <ul className="chat">{data.map((message, index) => <li key={index}>{message.date} - {message.author} - {message.text}</li>)}</ul>
