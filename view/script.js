@@ -1,4 +1,8 @@
-const socket = io();
+const socket = io('http://localhost:3000');
+
+// function renderMessage({ name, message, date }) {
+//   $(".messages").append(`<div><strong>${name}</strong>: ${message}</div>`);
+// }
 
 function renderMessage(message) {
   $(".messages").append('<div><strong>' + message.name + '</strong>: ' + message.message + ' </div>');
@@ -14,7 +18,7 @@ socket.on('receivedMessage', (message) => {
   renderMessage(message);
 });
 
-$("#chat").submit((event) => {
+$("#chat").submit(function (event) {
   event.preventDefault();
 
   const name = $('input[name=username]').val();
@@ -24,6 +28,7 @@ $("#chat").submit((event) => {
     const messageObj = {
       name,
       message,
+      date: new Date(),
     };
 
     renderMessage(messageObj);
@@ -32,4 +37,4 @@ $("#chat").submit((event) => {
   }
 });
 
-{/* <script src="script.js"></script> */}
+{/* <script src="script.js"></script> */ }

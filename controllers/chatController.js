@@ -3,9 +3,20 @@ const path = require('path');
 
 const router = express.Router();
 
-router.get('/', (_req, res) => {
-  res.status(200);
-  res.sendFile(path.resolve(__dirname, '..', 'view', 'index.html'));
-});
+const showChat = async (_req, res) => {
+  try {
+    res.status(200);
+    res.sendFile(path.resolve(__dirname, '..', 'view', 'index.html'));
+  } catch (err) {
+    console.log(err);
+    res.status(500);
+    res.json({ message: 'Algo deu errado' });
+  }
+};
 
-module.exports = router;
+router.get('/', showChat);
+
+module.exports = {
+  chatRouter: router,
+  showChat,
+};

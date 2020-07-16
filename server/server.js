@@ -1,7 +1,7 @@
 const express = require('express');
 const path = require('path');
 
-const chatRouter = require('../controllers/chatController');
+const { chatRouter } = require('../controllers/chatController');
 const { getAll, createMessage } = require('../models/Chat');
 
 const app = express();
@@ -22,7 +22,7 @@ io.on('connection', async (socket) => {
   socket.on('sendMessage', async (msg) => {
 
     await createMessage(msg)
-    
+
     socket.broadcast.emit('receivedMessage', msg);
   });
 });
