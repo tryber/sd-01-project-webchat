@@ -68,29 +68,29 @@ const App = () => {
 
   return (
     <div>
-      <form id='chat'>
+      <form id="chat">
         <br />
         <h1>O Maior Bate Papo do Brasil</h1>
         <br />
         <input
-          type='text'
+          type="text"
           value={username}
           onChange={event => setUsername(event.target.value)}
-          placeholder='Digite seu usuário'
+          placeholder="Digite seu usuário"
         />
-        <div className='messages'>
+        <div className="messages">
           <div className="message">
-          <strong>{divs.username}</strong> {divs.message}
+            <strong>{divs.username}</strong> {divs.message}
           </div>
         </div>
         <input
-          type='text'
+          type="text"
           value={message}
           onChange={event => setMessage(event.target.value)}
-          placeholder='Digite sua mensagem'
+          placeholder="Digite sua mensagem"
         />
         <button
-          type='submit'
+          type="submit"
           onClick={e => submitDataMongoDb(e, values, setDivs)}>
           Enviar
         </button>
