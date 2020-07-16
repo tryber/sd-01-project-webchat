@@ -1,0 +1,12 @@
+.content {
+  display: flex;
+  justify-content: center;
+}
+
+.chat {
+  display: flex;
+  flex-direction: column-reverse;
+  height: 700px;
+  list-style: none;
+  overflow: auto;
+}
