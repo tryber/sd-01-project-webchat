@@ -1,8 +1,9 @@
 let socket = io();
 
 function renderMessage(message) {
+  const { date } = message;
   $(".messages").append(
-    `<div><i>${message.date}</i><strong> ${message.name}</strong>: ${message.message}</div>`
+    `<div><i>${new Date(date).toLocaleString("pt-BR")}</i><strong> ${message.name}</strong>: ${message.message}</div>`
     );
 }
 
