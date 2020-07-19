@@ -1,66 +1,27 @@
 import React, { useState } from 'react';
+import socketIOClient from 'socket.io-client';
+import Typography from '@material-ui/core/Typography';
+import { makeStyles } from '@material-ui/core/styles';
+import Grid from '@material-ui/core/Grid';
+
 import Input from '../components/Input';
 import Bubble from '../components/Bubble';
 import Btn from '../components/Btn';
-import Typography from '@material-ui/core/Typography';
+import ListUserOn from '../components/ListUserOn';
+import Login from '../components/Login';
+import Notification from '../components/Notification';
 
-import { makeStyles } from '@material-ui/core/styles';
+const ENDPOINT = 'http://localhost:8080';
+const socket = socketIOClient(ENDPOINT);
 
-import Grid from '@material-ui/core/Grid';
+socket.on('notification', (name) => {
+  document.querySelector('#notifications').innerHTML = `${name} chegou!`;
+});
 
-// import io from 'socket.io-client';
-
-// const socket = io('http://localhost:3001');
-
-// const handleSubmit = (e, setConnected, username) => {
-//   e.preventDefault();
-//   socket.on('connection');
-//   socket.emit('login', username);
-//   setConnected(true);
-// };
-
-// import socketIOClient from 'socket.io-client';
-
-// import Chat from './components/Login';
-
-// const ENDPOINT = 'http://localhost:3001';
-
-// const socket = socketIOClient(ENDPOINT);
-
-// function renderMessage(elem) {
-//   const { author, message } = elem;
-//   return { author, message };
-// }
-
-// socket.on('receivedMessage', message => renderMessage(message));
-
-// socket.on('previousMessages', mongoDB =>
-//   mongoDB.forEach(element => renderMessage(element)),
-// );
-
-// function submitDataMongoDb(e, values, setDivs) {
-//   e.preventDefault();
-
-//   const { username: author, message } = values;
-//   setDivs({ username: author, message });
-//   if (!author && !message) {
-//     const messageObject = {
-//       author,
-//       message,
-//     };
-//     console.log('value tá de boa?', messageObject);
-//     socket.emit('sendMessage', messageObject);
-//   }
-// }
-
-// const printMessage = (msg, user) =>
-//   msg.map(message => {
-//     return (
-//       <div className='message'>
-//         <strong>{`→${user}: `}</strong> {message}
-//       </div>
-//     );
-//   });
+const socketDisconnect = (setConnect, nickname) => {
+  socket.emit('logoff', nickname);
+  setConnect(false);
+};
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -71,34 +32,34 @@ const useStyles = makeStyles((theme) => ({
     textAlign: 'center',
     color: theme.palette.text.secondary,
   },
+  connect: {
+    width: '100%',
+    maxWidth: 500,
+  },
 }));
 
-const submitUser = (value, setUser, setUsername, setMessage) => {
-  setUser(value);
-  setUsername('');
-  setMessage('');
-};
-
-const submitMsg = (value, msg, setMsg, setUsername, setMessage) => {
-  setMsg([...msg, value]);
-  setUsername('');
-  setMessage('');
-};
-
-const reset = (setMsg, setUser, setUsername, setMessage) => {
-  setUsername('');
-  setMessage('');
-  setMsg([]);
-  setUser('');
-};
-
 const Chat = () => {
-  const [username, setUsername] = useState('');
+  const [nickname, setNickname] = useState('');
   const [message, setMessage] = useState('');
-  const [msg, setMsg] = useState([]);
-  const [user, setUser] = useState('');
+  const [data, setData] = useState([]);
+  const [users, setUsers] = useState([]);
+  const [connect, setConnect] = useState(false);
 
   const classes = useStyles();
+
+  window.onbeforeunload = () => socket.emit('logoff', nickname);
+
+  socket.on('history', (messages) => setData(messages));
+
+  socket.on('users', (connectedUsers) => setUsers(connectedUsers));
+
+  const submitMsg = (message) => {
+    const msg = { message, nickname };
+    socket.emit('message', msg);
+    setMessage('');
+  };
+
+  console.log('nickname', nickname);
 
   return (
     <Grid
@@ -110,44 +71,31 @@ const Chat = () => {
       justify="center"
     >
       <Grid container spacing={3}>
-        <Typography variant="h5" gutterBottom>
+        {connect && <ListUserOn primary={users} />}
+        <Typography classe={classes.connect} variant="h5" gutterBottom>
           O Maior Bate Papo do Brasil
         </Typography>
 
-        <Grid item xs={6}>
-          <Input
-            className={classes.paper}
-            type="text"
-            hintText="Escreve seu usuário"
-            textBtn="Login"
-            value={username}
-            onChange={(value) => setUsername(value)}
+        {!connect && (
+          <Login
+            setConnect={setConnect}
+            nickname={nickname}
+            setNickname={setNickname}
           />
-        </Grid>
-        <Grid item xs={6}>
-          <Btn
-            variant="contained"
-            className={classes.paper}
-            color="primary"
-            text="Entrar"
-            onClick={() =>
-              submitUser(username, setUser, setUsername, setMessage)
-            }
-          />
-        </Grid>
+        )}
       </Grid>
       <Grid item xs={12}>
-        <Bubble user={user} message={msg} />
+        <Bubble data={data} />
       </Grid>
 
-      {user && (
+      {connect && (
         <Grid item xs={6}>
           <Btn
             variant="outlined"
             className={classes.paper}
             color="secondary"
-            text={`Logout: ${user}`}
-            onClick={() => reset(setMsg, setUser, setUsername, setMessage)}
+            text="SAIR"
+            onClick={() => socketDisconnect(setConnect, nickname)}
           />
           <Input
             className={classes.paper}
@@ -159,19 +107,22 @@ const Chat = () => {
           />
         </Grid>
       )}
-      {user && (
+      {connect && (
         <Grid item xs={6}>
           <Btn
             variant="contained"
             className={classes.paper}
             color="secondary"
             text="Enviar"
-            onClick={() =>
-              submitMsg(message, msg, setMsg, setUsername, setMessage)
-            }
+            onClick={() => submitMsg(message)}
           />
         </Grid>
       )}
+      <Notification
+        id="notifications"
+        hidden={!connect}
+        classe={classes.connect}
+      />
     </Grid>
   );
 };

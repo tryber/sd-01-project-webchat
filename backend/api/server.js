@@ -1,26 +1,32 @@
-const express = require('express');
-const path = require('path');
-const service = require('./router');
+const app = require('express')();
+const http = require('http').createServer(app);
+const io = require('socket.io')(http);
+const chat = require('../application/controller/main');
 
-const app = express();
-const server = require('http').createServer(app);
-const io = require('socket.io')(server);
+let allUsers = [];
 
-app.use(express.static(path.join(__dirname, '..', '..', 'src', ' public')));
-app.set('views', path.join(__dirname, '..', '..', 'src', ' public'));
-app.engine('html', require('ejs').renderFile);
-app.set('views engine', 'html');
+io.on('connection', async (socket) => {
+  io.emit('history', await chat.listAll());
 
-app.use('/', service.main);
+  socket.on('login', (nickname) => {
+    allUsers.push(nickname);
+    io.emit('users', allUsers);
+    io.emit('notification', nickname);
+  });
 
-let mongoDB = [];
+  socket.on('logoff', (nickname) => {
+    allUsers = allUsers.filter((user) => user !== nickname);
+    io.emit('users', allUsers);
+  });
 
-io.on('connection', socket => {
-  socket.emit('previousMessages', mongoDB);
-  socket.on('sendMessage', data => {
-    mongoDB.push(data);
-    socket.broadcast.emit('receivedMessage', data);
+  socket.on('message', async (data) => {
+    await chat.createMessage(data);
+    io.emit('history', await chat.listAll());
   });
 });
 
-module.exports = server;
+http.listen(8080, () => {
+  console.log('Servidor ouvindo na porta 8080');
+});
+
+module.exports = app;

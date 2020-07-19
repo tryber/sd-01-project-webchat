@@ -1,10 +1,6 @@
-// const Box = ({ message }) => <div className='messages'>{message}</div>;
-
-// export default Box;
-
 import React from 'react';
-import formatDate from "../service/formatDate";
 import { makeStyles } from '@material-ui/core/styles';
+import sortColor from '../service/sortColor';
 
 const useStyles = makeStyles(() => ({
   container: {
@@ -15,6 +11,7 @@ const useStyles = makeStyles(() => ({
     display: 'flex',
   },
   bubble: {
+    backgroundColor: sortColor,
     border: '0.5px solid black',
     borderRadius: '10px',
     margin: '5px',
@@ -23,13 +20,14 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-const Bubble = ({ user, message }) => {
+const Bubble = ({ data }) => {
   const classes = useStyles();
-  const date = formatDate();
-  const chatBubbles = message.map((msg, i = 0) => (
-    <div  className={`${classes.bubbleContainer}`} key={i}>
+  const chatBubbles = data.map((msg, i = 0) => (
+    <div className={`${classes.bubbleContainer}`} key={i}>
       <div key={i++} className={classes.bubble}>
-        <div className={classes.button}>{`${date} →  ${user}: ${msg}`}</div>
+        <div
+          className={classes.button}
+        >{`${msg.date} →  ${msg.nickname}: ${msg.message}`}</div>
       </div>
     </div>
   ));
