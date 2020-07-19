@@ -62,7 +62,7 @@ import Grid from '@material-ui/core/Grid';
 //     );
 //   });
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   root: {
     height: '100vh',
   },
@@ -103,32 +103,33 @@ const Chat = () => {
   return (
     <Grid
       container
-      component='main'
+      component="main"
       className={classes.root}
       spacing={0}
-      alignItems='center'
-      justify='center'>
+      alignItems="center"
+      justify="center"
+    >
       <Grid container spacing={3}>
-        <Typography variant='h5' gutterBottom>
+        <Typography variant="h5" gutterBottom>
           O Maior Bate Papo do Brasil
         </Typography>
 
         <Grid item xs={6}>
           <Input
             className={classes.paper}
-            type='text'
-            hintText='Escreve seu usuário'
-            textBtn='Login'
+            type="text"
+            hintText="Escreve seu usuário"
+            textBtn="Login"
             value={username}
-            onChange={value => setUsername(value)}
+            onChange={(value) => setUsername(value)}
           />
         </Grid>
         <Grid item xs={6}>
           <Btn
-            variant='contained'
+            variant="contained"
             className={classes.paper}
-            color='primary'
-            text='Entrar'
+            color="primary"
+            text="Entrar"
             onClick={() =>
               submitUser(username, setUser, setUsername, setMessage)
             }
@@ -142,29 +143,29 @@ const Chat = () => {
       {user && (
         <Grid item xs={6}>
           <Btn
-            variant='outlined'
+            variant="outlined"
             className={classes.paper}
-            color='secondary'
+            color="secondary"
             text={`Logout: ${user}`}
             onClick={() => reset(setMsg, setUser, setUsername, setMessage)}
           />
           <Input
             className={classes.paper}
             value={message}
-            type='text'
-            hintText='Digite sua mensagem'
-            textBtn='Enviar'
-            onChange={value => setMessage(value)}
+            type="text"
+            hintText="Digite sua mensagem"
+            textBtn="Enviar"
+            onChange={(value) => setMessage(value)}
           />
         </Grid>
       )}
       {user && (
         <Grid item xs={6}>
           <Btn
-            variant='contained'
+            variant="contained"
             className={classes.paper}
-            color='secondary'
-            text='Enviar'
+            color="secondary"
+            text="Enviar"
             onClick={() =>
               submitMsg(message, msg, setMsg, setUsername, setMessage)
             }

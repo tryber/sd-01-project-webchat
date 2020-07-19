@@ -7,7 +7,7 @@ export default function App() {
   return (
     <Fragment>
       <CssBaseline />
-      <Container maxWidth='sm'>
+      <Container maxWidth="sm">
         <Chat />
       </Container>
     </Fragment>
