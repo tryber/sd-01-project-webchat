@@ -38,29 +38,62 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+const gridtwo = (classes, message, setMessage, setConnect, nickname) => (
+  <>
+    <Grid item xs={6}>
+      <Btn
+        variant="outlined"
+        className={classes.paper}
+        color="secondary"
+        text="SAIR"
+        onClick={() => socketDisconnect(setConnect, nickname)}
+      />
+      <Input
+        className={classes.paper}
+        value={message}
+        type="text"
+        hintText="Digite sua mensagem"
+        textBtn="Enviar"
+        onChange={(value) => setMessage(value)}
+      />
+    </Grid>
+  </>
+);
+
+const submitMsg = (message, setMessage, nickname) => {
+  const msg = { message, nickname };
+  socket.emit('message', msg);
+  setMessage('');
+};
+
+const gridTree = (classes, submitMsg, message, setMessage, nickname) => (
+  <Grid item xs={6}>
+    <Btn
+      variant="contained"
+      className={classes.paper}
+      color="secondary"
+      text="Enviar"
+      onClick={() => submitMsg(message, setMessage, nickname)}
+    />
+  </Grid>
+);
+
+const typo = (classes) => (
+  <Typography classe={classes.connect} variant="h5" gutterBottom>
+    O Maior Bate Papo do Brasil
+  </Typography>
+);
+
 const Chat = () => {
   const [nickname, setNickname] = useState('');
   const [message, setMessage] = useState('');
   const [data, setData] = useState([]);
   const [users, setUsers] = useState([]);
   const [connect, setConnect] = useState(false);
-
   const classes = useStyles();
-
   window.onbeforeunload = () => socket.emit('logoff', nickname);
-
   socket.on('history', (messages) => setData(messages));
-
   socket.on('users', (connectedUsers) => setUsers(connectedUsers));
-
-  const submitMsg = (message) => {
-    const msg = { message, nickname };
-    socket.emit('message', msg);
-    setMessage('');
-  };
-
-  console.log('nickname', nickname);
-
   return (
     <Grid
       container
@@ -72,10 +105,7 @@ const Chat = () => {
     >
       <Grid container spacing={3}>
         {connect && <ListUserOn primary={users} />}
-        <Typography classe={classes.connect} variant="h5" gutterBottom>
-          O Maior Bate Papo do Brasil
-        </Typography>
-
+        {typo(classes)}
         {!connect && (
           <Login
             setConnect={setConnect}
@@ -87,37 +117,8 @@ const Chat = () => {
       <Grid item xs={12}>
         <Bubble data={data} />
       </Grid>
-
-      {connect && (
-        <Grid item xs={6}>
-          <Btn
-            variant="outlined"
-            className={classes.paper}
-            color="secondary"
-            text="SAIR"
-            onClick={() => socketDisconnect(setConnect, nickname)}
-          />
-          <Input
-            className={classes.paper}
-            value={message}
-            type="text"
-            hintText="Digite sua mensagem"
-            textBtn="Enviar"
-            onChange={(value) => setMessage(value)}
-          />
-        </Grid>
-      )}
-      {connect && (
-        <Grid item xs={6}>
-          <Btn
-            variant="contained"
-            className={classes.paper}
-            color="secondary"
-            text="Enviar"
-            onClick={() => submitMsg(message)}
-          />
-        </Grid>
-      )}
+      {connect && gridtwo(classes, message, setMessage, setConnect, nickname)}
+      {connect && gridTree(classes, submitMsg, message, setMessage, nickname)}
       <Notification
         id="notifications"
         hidden={!connect}
