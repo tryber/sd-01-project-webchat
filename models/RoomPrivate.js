@@ -68,21 +68,6 @@ class RoomPrivate {
     });
     return data;
   }
-
-  static getAllRoomPrivate = async () => {
-    try {
-      const db = await connection();
-      const data = await db.collection('RoomPrivate').find().toArray();
-      if (!data) {
-        const notFoundError = new Error('NotFoundError');
-        notFoundError.details = `Nada encontrado`;
-        throw notFoundError;
-      }
-      return data;
-    } catch (err) {
-      throw err;
-    }
-  }
 }
 
 module.exports = RoomPrivate;
