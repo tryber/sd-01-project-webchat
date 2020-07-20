@@ -95,23 +95,11 @@ const Chat = () => {
   socket.on('history', (messages) => setData(messages));
   socket.on('users', (connectedUsers) => setUsers(connectedUsers));
   return (
-    <Grid
-      container
-      component="main"
-      className={classes.root}
-      spacing={0}
-      alignItems="center"
-      justify="center"
-    >
+    <Grid container component="main" className={classes.root} spacing={0} alignItems="center" justify="center">
       <Grid container spacing={3}>
         {connect && <ListUserOn primary={users} />}
         {typo(classes)}
-        {!connect && (
-          <Login
-            setConnect={setConnect}
-            nickname={nickname}
-            setNickname={setNickname}
-          />
+        {!connect && (<Login setConnect={setConnect} nickname={nickname} setNickname={setNickname} />
         )}
       </Grid>
       <Grid item xs={12}>
@@ -119,11 +107,7 @@ const Chat = () => {
       </Grid>
       {connect && gridtwo(classes, message, setMessage, setConnect, nickname)}
       {connect && gridTree(classes, submitMsg, message, setMessage, nickname)}
-      <Notification
-        id="notifications"
-        hidden={!connect}
-        classe={classes.connect}
-      />
+      <Notification id="notifications" hidden={!connect} classe={classes.connect} />
     </Grid>
   );
 };
