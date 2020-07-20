@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import { MessageContext } from '../context';
-import { Link } from 'react-router-dom';
+import { Link, Redirect } from 'react-router-dom';
 import '../style/component/HowITalking.css';
 
 const getName = (array, id) => {
@@ -9,6 +9,7 @@ const getName = (array, id) => {
 
 function HowITalking({ privateUser }) {
   const { users, login } = useContext(MessageContext);
+  if (!getName(users, privateUser)) return <Redirect to="/" />
   return (
     <div className="HowITalking">
       <Link className="link" to="/">{`Voltar`}</Link>

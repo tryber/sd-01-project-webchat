@@ -29,6 +29,7 @@ function PrivateChat({ match: { params: { selectIdUser } } }) {
     setMessageRooms(chatRoom.messages);
   }
   socket.on('chatRoomsServer', (data) => updateChatRoom(data));
+  window.onbeforeunload = () => socket.emit("logoff", login.id);
   if (!login.isLogin) return <Redirect to="/" />
   return (
     <main className="Chat">

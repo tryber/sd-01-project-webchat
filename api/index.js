@@ -14,6 +14,10 @@ let rooms = [];
 let allMessage = [];
 let online = [];
 
+const logoffUser = (data, id) => {
+  return data.filter((user) => user.id !== id);
+}
+
 io.on("connection", async (socket) => {
   allMessage = await message.getAll();
   rooms = await RoomPrivate.getAllRoomPrivate();
@@ -26,6 +30,12 @@ io.on("connection", async (socket) => {
     allMessage.push(value)
     io.emit('messageServer', allMessage);
   });
+
+  socket.on('logoff', async (login) => {
+    online = logoffUser(online, login.id);
+    io.emit('serverStatus', { chats: rooms, userOnline: online });
+    io.emit('notification', `Saiu ${login.userName}!`);
+  })
 
   socket.on('login', (login) => {
     online.push(login)
@@ -45,11 +55,3 @@ io.on("connection", async (socket) => {
 
 app.listen(8080);
 console.log(`Conectado a porta ${8080}`);
-
-// const addRoom = (array, value) => {
-//   const updatedArray = array.filter(({ users1, users2 }) => {
-//     return (users1 === value.users1 && users2 === value.users2);
-//   });
-//   updatedArray.push(value);
-//   return updatedArray;
-// }

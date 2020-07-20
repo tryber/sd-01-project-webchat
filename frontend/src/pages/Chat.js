@@ -25,6 +25,7 @@ function Chat() {
   socket.on('messageServer', (data) => setMessages(data));
   socket.on('notification', (value) => setNotification(value));
   socket.on('chatRoomsServer', (value) => setRoom(value));
+  window.onbeforeunload = () => { if (login.isLogin) { socket.emit("logoff", login) } };
   return (
     <main className="Chat">
       <div className="sub-main">
