@@ -14,8 +14,6 @@ class Message {
         content: content,
         hour: new Date(),
         author: author,
-      }, {
-        
       });
     } catch (err) {
       throw err;
