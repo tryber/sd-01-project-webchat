@@ -14,6 +14,7 @@ class Webchat {
 
   create = async () => {
     const { text, author } = this;
+    if (!text || !author) return false;
     const db = await connection();
     const result = await db.collection('messages').insertOne({
       text: text,

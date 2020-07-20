@@ -1,13 +1,22 @@
 import React, { useState } from 'react';
 import io from 'socket.io-client';
+import { toast } from 'react-toastify';
 import OnlineUsers from './OnlineUsers';
-import './Webchat.css';
 import Login from './Login';
+import 'react-toastify/dist/ReactToastify.css';
+import './Webchat.css';
 
 const socket = io('http://localhost:8080');
 
+const notify = (nickname) => {
+  toast.success(`${nickname} chegou!`, {
+    position: toast.POSITION.BOTTOM_LEFT,
+    autoClose: 4000,
+  });
+}
+
 socket.on('notification', (nickname) => {
-  document.querySelector('#notifications').innerHTML = `${nickname} chegou!`;
+  notify(nickname);
 });
 
 function socketDisconnect(setConnected, nickname) {
@@ -40,7 +49,6 @@ function Webchat() {
           <button onClick={() => sendMessage(message, nickname)}>Enviar</button>
           <button onClick={() => socketDisconnect(setConnected, nickname)}>Sair</button>
         </div>}
-        <p id="notifications" hidden={!connected} />
       </div>
     </div>
   );
