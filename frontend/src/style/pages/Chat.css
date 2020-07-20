@@ -36,6 +36,29 @@
   width: 55%;
 }
 
+.sub-container-private {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  height: 80%;
+  justify-content: space-between;
+  max-height: 800px;
+  width: 80%;
+}
+
+.sub-main-private {
+  align-items: center;
+  background: rgb( 7 , 9 , 12 );
+  border-radius: 30px;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  height: 80%;
+  padding: 40px;
+  width: 60%;
+}
+
+
 .list-messages {
   display: flex;
   flex-direction: column;

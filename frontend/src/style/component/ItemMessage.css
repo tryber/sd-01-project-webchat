@@ -9,6 +9,7 @@
   background: rgb( 15 , 163 , 107 );
   color: black;
   margin: 10px;
+  word-break: break-all;
 }
 
 .ItemMessage.otherUser {
