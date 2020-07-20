@@ -19,27 +19,22 @@ function Chat() {
   useEffect(() => {
     if (login.isLogin && !verifyLogin()) socket.emit('login', login);
   }, [login])
-  socket.on('serverStatus', (serverStatus) => {
-    setServer(serverStatus);
-  })
+  socket.on('serverStatus', (serverStatus) => setServer(serverStatus));
   socket.on('messageServer', (data) => setMessages(data));
   socket.on('notification', (value) => setNotification(value));
   socket.on('chatRoomsServer', (value) => setRoom(value));
   window.onbeforeunload = () => { if (login.isLogin) { socket.emit("logoff", login) } };
   return (
-    <main className="Chat">
-      <div className="sub-main">
-        {login.isLogin || <Login />}
-        {login.isLogin || <InfoChat />}
-        {!login.isLogin || <div className="container">
-          <ListUser />
-          <div className="sub-container">
-            <div className="list-messages">{!messages || messages.map((data, index) => <ItemMessage key={`men${index}`} att={data} />)}</div>
-            <InputMessage sendMessage={(value) => sendMessage(value)} />
-          </div>
-        </div>}
-        {!notification || <TextNotification message={notification} setNotification={() => setNotification()} />}
-      </div>
+    <main className="Chat"><div className="sub-main">
+      {login.isLogin || <Login />}{login.isLogin || <InfoChat />}
+      {!login.isLogin || <div className="container">
+        <ListUser />
+        <div className="sub-container">
+          <div className="list-messages">{!messages || messages.map((data, index) => <ItemMessage key={`men${index}`} att={data} />)}</div>
+          <InputMessage sendMessage={(value) => sendMessage(value)} />
+        </div></div>}
+      {!notification || <TextNotification message={notification} setNotification={() => setNotification()} />}
+    </div>
     </main>
   );
 }
